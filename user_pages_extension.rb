@@ -20,4 +20,6 @@ class UserPagesExtension < Radiant::Extension
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end
   end
+
+  class AccessDenied < StandardError; end
 end

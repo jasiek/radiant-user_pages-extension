@@ -12,4 +12,10 @@ describe User, 'permissions' do
     @user.can?(:create, @page).should be_true
     @user.can?(:destroy, @page).should be_false
   end
+
+  after :each do
+    @user.destroy
+    @page.destroy
+    @user_page_permission.destroy
+  end
 end

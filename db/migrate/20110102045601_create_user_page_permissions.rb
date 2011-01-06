@@ -3,7 +3,7 @@ class CreateUserPagePermissions < ActiveRecord::Migration
     create_table :user_page_permissions do |t|
       t.integer :user_id
       t.integer :page_id
-      t.string :permission
+      t.string :action
       t.timestamps
     end
   end

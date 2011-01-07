@@ -7,6 +7,7 @@ end
 describe Page do
   before :all do
     @user = User.create!
+    PageObserver.current_user = @user
     @page_with_permission = Page.create!(:title => random_string(), :slug => random_string(), :breadcrumb => random_string(), :status => Status.find(1))
     @page_without_permission = Page.create(:title => random_string(), :slug => random_string(), :breadcrumb => random_string(), :status => Status.find(1))
   end

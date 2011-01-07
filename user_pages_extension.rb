@@ -13,9 +13,14 @@ class UserPagesExtension < Radiant::Extension
   #   end
   # end
 
+  extension_config do |config|
+    config.active_record.observers = [config.active_record.observers, :page_observer]
+  end
+
   # See your config/routes.rb file in this extension to define custom routes
   
   def activate
+    PageObserver.instance.send(:add_observer!, Page)
     # tab 'Content' do
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end

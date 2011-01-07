@@ -34,3 +34,11 @@ Spec::Runner.configure do |config|
   # If you declare global fixtures, be aware that they will be declared
   # for all of your examples, even those that don't use them.
 end
+
+def with_disabled_observers(&blk)
+  Page.delete_observers
+  UserPagePermission.delete_observers
+  blk.call
+  PageObserver.instance.send(:add_observer!, Page)
+  UserPagePermissionObserver.instance.send(:add_observer!, UserPagePermission)
+end

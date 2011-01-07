@@ -21,6 +21,8 @@ class UserPagesExtension < Radiant::Extension
   
   def activate
     PageObserver.instance.send(:add_observer!, Page)
+    UserPagePermissionObserver.instance.send(:add_observer!, UserPagePermission)
+    Page.send(:include, PageExtension)
     # tab 'Content' do
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end

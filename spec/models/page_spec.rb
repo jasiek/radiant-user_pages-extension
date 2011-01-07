@@ -8,8 +8,9 @@ describe Page do
   before :all do
     @user = User.create!
     PageObserver.current_user = @user
+    UserPagePermissionObserver.current_user = @user
     @page_with_permission = Page.create!(:title => random_string(), :slug => random_string(), :breadcrumb => random_string(), :status => Status.find(1))
-    @page_without_permission = Page.create(:title => random_string(), :slug => random_string(), :breadcrumb => random_string(), :status => Status.find(1))
+    @page_without_permission = Page.create!(:title => random_string(), :slug => random_string(), :breadcrumb => random_string(), :status => Status.find(1))
   end
   
   describe 'creation' do
@@ -80,9 +81,15 @@ describe Page do
     end
 
     it "should allow the user to change permissions" do
+      @user_with_permission = @user
+      @page_with_permission.permissions.create!(:user_id => @user_with_permission, :action => 'create')
     end
 
     it "should prevent the user from changing permissions" do
+      @user_without_permission = @user
+      lambda do
+        @page_without_permission.permissions.create!(:user_id => @user_without_permission, :action => 'create')
+      end.should raise_exception(UserPagesExtension::AccessDenied)
     end
 
     after :each do

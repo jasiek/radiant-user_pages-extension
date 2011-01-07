@@ -14,7 +14,7 @@ class UserPagesExtension < Radiant::Extension
   # end
 
   extension_config do |config|
-    config.active_record.observers = [config.active_record.observers, :page_observer]
+    config.active_record.observers = [config.active_record.observers, :page_observer, :user_page_permission_observer]
   end
 
   # See your config/routes.rb file in this extension to define custom routes

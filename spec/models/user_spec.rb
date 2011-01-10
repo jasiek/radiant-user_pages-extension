@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe User, 'permissions' do
-  before(:each) do
+  before :each do
     with_disabled_observers do
       @user = User.create!
       @page = Page.create!(:title => 'sample_title', :slug => 'sample_title', :breadcrumb => '...', :status => Status.find(1))

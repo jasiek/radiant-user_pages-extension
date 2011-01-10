@@ -114,6 +114,7 @@ describe Page do
 
     it 'should copy permissions from parent to child when a new page is created' do
       @new_page = Page.create!(default_page_params(:parent => @page_with_permission))
+      @new_page.permissions.count.should > 0
       Set[@new_page.permissions.map(&:action)].should == Set[@page_with_permission.permissions.map(&:action)]
     end
   end
@@ -135,6 +136,10 @@ describe Page do
   end
 
   after :all do
-    @user.destroy
+    with_disabled_observers do
+      User.destroy_all
+      Page.destroy_all
+      UserPagePermission.destroy_all
+    end
   end
 end

@@ -1,39 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-def random_string
-  Digest::SHA1.hexdigest(Kernel.rand.to_s)
-end
-
-def default_status
-  Status.find(1)
-end
-
-def default_page_params(additional_params={})
-  {
-    :title => random_string(),
-    :slug => random_string(),
-    :breadcrumb => random_string(),
-    :status => default_status()
-  }.merge(additional_params)
-end
-
-def default_user_params(additional_params={})
-  {
-    :login => random_string(),
-    :name => random_string(),
-    :password => 'wyborowa',
-    :password_confirmation => 'wyborowa'
-  }.merge(additional_params)
-end
-
-def with_disabled_observers(&blk)
-  Page.delete_observers
-  UserPagePermission.delete_observers
-  blk.call
-  PageObserver.instance.send(:add_observer!, Page)
-  UserPagePermissionObserver.instance.send(:add_observer!, UserPagePermission)
-end
-
 describe Page do
   before :all do
     @user = User.create!(default_user_params()) 

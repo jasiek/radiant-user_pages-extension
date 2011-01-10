@@ -143,6 +143,22 @@ describe Page do
     end
   end
 
+  describe 'permission removal on page removal' do
+    before :each do
+      with_disabled_observers do
+        ['create', 'destroy', 'update'].each do |action|
+          UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => action)
+        end
+      end
+    end
+
+    it 'should remove all permissions related to a particular page' do
+      permission_count_before_removal = UserPagePermission.count
+      @page_with_permission.destroy
+      UserPagePermission.count.should_not == permission_count_before_removal
+    end
+  end
+
   after :all do
     @user.destroy
   end

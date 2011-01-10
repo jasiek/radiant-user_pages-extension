@@ -8,8 +8,4 @@ describe UserPagePermission do
   it "should be valid" do
     @user_page_permission.should be_valid
   end
-
-  after :each do
-    @user_page_permission.destroy
-  end
 end

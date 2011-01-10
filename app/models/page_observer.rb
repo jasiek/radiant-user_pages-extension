@@ -7,6 +7,7 @@ class PageObserver < ActiveRecord::Observer
 
   def before_destroy(page)
     raise UserPagesExtension::AccessDenied unless @@current_user.can?(:destroy, page)
+    page.permissions.destroy_all
   end
 
   def before_update(page)
@@ -15,9 +16,5 @@ class PageObserver < ActiveRecord::Observer
 
   def after_create(page)
     page.permissions = page.parent.permissions.clone
-  end
-
-  def after_destroy(page)
-    page.permissions.destroy_all
   end
 end

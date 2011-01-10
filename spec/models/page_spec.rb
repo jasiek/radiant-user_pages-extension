@@ -29,7 +29,9 @@ describe Page do
     end
 
     after :each do
-      @user_page_permission.destroy
+      with_disabled_observers do
+        @user_page_permission.destroy
+      end
     end
   end
 
@@ -51,7 +53,9 @@ describe Page do
     end
 
     after :each do
-      @user_page_permission.destroy
+      with_disabled_observers do
+        @user_page_permission.destroy
+      end
     end
   end
   
@@ -75,7 +79,9 @@ describe Page do
     end
 
     after :each do
-      @user_page_permission.destroy
+      with_disabled_observers do
+        @user_page_permission.destroy
+      end
     end
   end
 
@@ -99,7 +105,9 @@ describe Page do
     end
 
     after :each do
-      @user_page_permission.destroy
+      with_disabled_observers do
+        @user_page_permission.destroy
+      end
     end
   end
 
@@ -132,6 +140,28 @@ describe Page do
       permission_count_before_removal = UserPagePermission.count
       @page_with_permission.destroy
       UserPagePermission.count.should_not == permission_count_before_removal
+    end
+  end
+
+  describe 'permissions are changeable if permissions allow it' do
+    before :each do
+      with_disabled_observers do
+        @page_one_below = Page.create!(default_page_params(:parent => @page_with_permission))
+        @page_two_below = Page.create!(default_page_params(:parent => @page_one_below))
+        ['create', 'permissions'].each do |action|
+          UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => action)
+          UserPagePermission.create!(:user_id => @user.id, :page_id => @page_one_below.id, :action => action)
+          UserPagePermission.create!(:user_id => @user.id, :page_id => @page_two_below.id, :action => action)
+        end
+      end
+    end
+
+    it 'should propagate all permission changes down the tree' do
+      @page_with_permission.permissions.create(:user => @user, :action => 'destroy')
+      @page_with_permission.permissions.find(:first, :conditions => ['action = ?', 'create']).destroy
+      [@page_with_permission, @page_one_below, @page_two_below].each do |page|
+        page.permissions.map(&:action).to_set.should == Set['destroy', 'permissions']
+      end
     end
   end
 

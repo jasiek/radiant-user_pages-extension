@@ -17,6 +17,15 @@ def default_page_params(additional_params={})
   }.merge(additional_params)
 end
 
+def default_user_params(additional_params={})
+  {
+    :login => random_string(),
+    :name => random_string(),
+    :password => 'wyborowa',
+    :password_confirmation => 'wyborowa'
+  }.merge(additional_params)
+end
+
 def with_disabled_observers(&blk)
   Page.delete_observers
   UserPagePermission.delete_observers
@@ -27,7 +36,7 @@ end
 
 describe Page do
   before :all do
-    @user = User.create!
+    @user = User.create!(default_user_params()) 
     with_disabled_observers do
       @page_with_permission = Page.create!(default_page_params())
       @page_without_permission = Page.create!(default_page_params())

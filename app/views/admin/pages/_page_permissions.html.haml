@@ -1,4 +1,7 @@
 #user_page_permissions
+  - if error_message_on(@page, :permissions)
+  %div.access_denied
+    = error_message_on(@page, :permissions)
   %table.permissions
     %caption
       Page Permissions

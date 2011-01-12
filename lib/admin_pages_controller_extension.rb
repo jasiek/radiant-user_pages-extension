@@ -25,6 +25,16 @@ module AdminPagesControllerExtension
     end
   end
 
+  def rescue_action(exception)
+    if exception.is_a?(UserPagesExtension::AccessDenied)
+      @page.errors.add(:permissions, 'You lack the required priviledges to perform this action')
+      response_for :invalid
+    else
+      super
+    end
+  end
+
+  private
   def clear_and_restore_permissions(page, permissions)
     return if no_changes_to_permissions?(page.permissions, permissions)
     page.permissions.clear

@@ -26,6 +26,11 @@ class UserPagesExtension < Radiant::Extension
     User.send(:include, UserExtension)
     Admin::PagesController.send(:include, AdminPagesControllerExtension)
     Admin::PagesController.send(:helper, AdminPagesHelperExtension)
+    ApplicationController.class_eval do
+      def set_current_user
+        PageObserver.current_user = UserPagePermissionObserver.current_user = UserActionObserver.current_user = current_user
+      end
+    end
     # tab 'Content' do
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end

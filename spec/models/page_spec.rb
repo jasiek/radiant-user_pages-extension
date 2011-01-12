@@ -2,13 +2,12 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Page do
   before :all do
-    @user = User.create!(default_user_params()) 
+    @user = User.create!(default_user_params())
+    @admin_user = User.create!(default_user_params(:admin => true))
     with_disabled_observers do
       @page_with_permission = Page.create!(default_page_params())
       @page_without_permission = Page.create!(default_page_params())
     end
-    PageObserver.current_user = @user
-    UserPagePermissionObserver.current_user = @user
   end
   
   describe 'creation' do
@@ -16,10 +15,16 @@ describe Page do
       with_disabled_observers do
         @user_page_permission = UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => 'create')
       end
+      set_current_user(@user)
     end
 
     it "should allow the user to create a new page" do
       Page.create!(default_page_params(:parent => @page_with_permission))
+    end
+
+    it "should allow the administrator to create a new page unconditionally" do
+      set_current_user(@admin_user)
+      Page.create!(default_page_params(:parent => @page_without_permission))
     end
 
     it "should prevent the user from creating a new page" do
@@ -40,10 +45,16 @@ describe Page do
       with_disabled_observers do
         @user_page_permission = UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => 'destroy')
       end
+      set_current_user(@user)
     end
 
     it "should allow the user to destroy the page" do
       @page_with_permission.destroy
+    end
+
+    it "should allow the administrator to destroy a page unconditionally" do
+      set_current_user(@admin_user)
+      @page_without_permission.destroy
     end
 
     it "should prevent the user from destroying the page" do
@@ -64,11 +75,18 @@ describe Page do
       with_disabled_observers do
         @user_page_permission = UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => 'update')
       end
+      set_current_user(@user)
     end
 
     it "should allow the user to edit the page" do
       @page_with_permission.title = 'hello'
       @page_with_permission.save!
+    end
+
+    it "should allow the administrator to edit the page unconditionally" do
+      set_current_user(@admin_user)
+      @page_without_permission.title = 'hello'
+      @page_without_permission.save!
     end
 
     it "should prevent the user from editing the page" do
@@ -90,11 +108,17 @@ describe Page do
       with_disabled_observers do
         @user_page_permission = UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => 'permissions')
       end
+      set_current_user(@user)
     end
 
     it "should allow the user to change permissions" do
       @user_with_permission = @user
       @page_with_permission.permissions.create!(:user_id => @user_with_permission.id, :action => 'create')
+    end
+
+    it "should allow the administrator to change user permissions unconditionally" do
+      set_current_user(@admin_user)
+      @page_without_permission.permissions.create!(:user_id => @user.id, :action => 'create')
     end
 
     it "should prevent the user from changing permissions" do
@@ -118,6 +142,7 @@ describe Page do
           UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => action)
         end
       end
+      set_current_user(@user)
     end
 
     it 'should copy permissions from parent to child when a new page is created' do
@@ -134,6 +159,7 @@ describe Page do
           UserPagePermission.create!(:user_id => @user.id, :page_id => @page_with_permission.id, :action => action)
         end
       end
+      set_current_user(@user)
     end
 
     it 'should remove all permissions related to a particular page' do
@@ -154,6 +180,7 @@ describe Page do
           UserPagePermission.create!(:user_id => @user.id, :page_id => @page_two_below.id, :action => action)
         end
       end
+      set_current_user(@user)
     end
 
     it 'should propagate all permission changes down the tree' do

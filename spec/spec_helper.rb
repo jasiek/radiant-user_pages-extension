@@ -68,3 +68,7 @@ def default_user_params(additional_params={})
     :password_confirmation => 'wyborowa'
   }.merge(additional_params)
 end
+
+def set_current_user(user)
+  PageObserver.current_user = UserPagePermissionObserver.current_user = user
+end

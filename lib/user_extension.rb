@@ -4,6 +4,6 @@ module UserExtension
   end
 
   def can?(action, page)
-    permissions.count(:conditions => ['page_id = ? AND action = ?', page.id, action.to_s]) > 0
+    admin? || permissions.count(:conditions => ['page_id = ? AND action = ?', page.id, action.to_s]) > 0
   end
 end

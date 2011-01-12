@@ -19,4 +19,5 @@
         %td
           = permission_check_box(user, @page, :create, 'Create a subpage')
           = permission_check_box(user, @page, :destroy, 'Destroy this page')
+          = permission_check_box(user, @page, :update, 'Update this page')
           = permission_check_box(user, @page, :permissions, 'Change permissions')

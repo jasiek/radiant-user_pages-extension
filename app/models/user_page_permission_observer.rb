@@ -2,7 +2,7 @@ class UserPagePermissionObserver < ActiveRecord::Observer
   cattr_accessor :current_user
 
   def before_create(permission)
-    raise UserPagesExtension::AccessDenied unless @@current_user.can?(:permissions, permission.page)
+    raise UserPagesExtension::AccessDenied unless current_user_can?(:permissions, permission.page)
   end
 
   def after_create(permission)
@@ -15,5 +15,10 @@ class UserPagePermissionObserver < ActiveRecord::Observer
     permission.page.children.each do |page|
       page.permissions.find(:all, :conditions => ['user_id = ? AND action = ?', permission.user_id, permission.action]).map(&:destroy)
     end
+  end
+
+  private
+  def current_user_can?(action, page)
+    @@current_user.admin? or @@current_user.can?(action, page)
   end
 end

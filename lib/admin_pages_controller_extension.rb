@@ -11,12 +11,7 @@ module AdminPagesControllerExtension
 
   def persist_permissions_on_update(&blk)
     UserPagePermission.transaction do
-      @page.permissions.clear
-      params[:page][:permissions].each do |query_string|
-        next if query_string.empty?
-        user_id, action = query_string.split(/,/)
-        @page.permissions.create!(:user => User.find(user_id), :action => action)
-      end
+      clear_and_restore_permissions(@page, params[:page][:permissions])
       params[:page].delete(:permissions)
       yield
     end
@@ -26,11 +21,16 @@ module AdminPagesControllerExtension
     UserPagePermission.transaction do
       permissions = params[:page].delete(:permissions)
       yield
-      permissions.each do |query_string|
-        next if query_string.empty?
-        user_id, action = query_string.split(/,/)
-        @page.permissions.create!(:user => User.find(user_id), :action => action)
-      end
+      clear_and_restore_permissions(@page, permissions)
+    end
+  end
+
+  def clear_and_restore_permissions(page, permissions)
+    page.permissions.clear
+    permissions.each do |query_string|
+      next if query_string.empty?
+      user_id, action = query_string.split(/,/)
+      page.permissions.create!(:user => User.find(user_id), :action => action)
     end
   end
 end

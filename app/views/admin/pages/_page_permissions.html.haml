@@ -1,0 +1,31 @@
+#user_page_permissions
+  %table.permissions
+    %caption
+      Page Permissions
+    %tr
+      %th
+        Login
+      %th
+        Administrator?
+      %th
+        Permissions
+    - User.all.each do |user|
+      %tr
+        %td
+          = user.name
+          = "(#{user.login})"
+        %td
+          = user.admin? ? 'Yes' : 'No'
+        %td
+          = check_box_tag :page_create, user.can?(:create, @page), user.can?(:create, @page)
+          = hidden_field_tag :page_create, false
+          %label{:for => 'page_create'}
+            Create a subpage
+          = check_box_tag :page_destroy, user.can?(:destroy, @page), user.can?(:destroy, @page)
+          = hidden_field_tag :page_destroy, false
+          %label{:for => 'page_destroy'}
+            Destroy this page
+          = check_box_tag :page_permissions, user.can?(:permissions, @page), user.can?(:permissions, @page)
+          = hidden_field :page_permissions, false
+          %label{:for => 'page_permissions'}
+            Change permissions

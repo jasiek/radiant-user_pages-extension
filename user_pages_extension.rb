@@ -24,9 +24,11 @@ class UserPagesExtension < Radiant::Extension
     UserPagePermissionObserver.instance.send(:add_observer!, UserPagePermission)
     Page.send(:include, PageExtension)
     User.send(:include, UserExtension)
+    Admin::PagesController.send(:include, AdminPagesControllerExtension)
     # tab 'Content' do
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end
+    admin.page.edit.add :parts_bottom, 'page_permissions', :after => 'edit_timestamp'
   end
 
   class AccessDenied < StandardError; end

@@ -25,6 +25,7 @@ class UserPagesExtension < Radiant::Extension
     Page.send(:include, PageExtension)
     User.send(:include, UserExtension)
     Admin::PagesController.send(:include, AdminPagesControllerExtension)
+    Admin::PagesController.send(:helper, AdminPagesHelperExtension)
     # tab 'Content' do
     #   add_item "User Pages", "/admin/user_pages", :after => "Pages"
     # end

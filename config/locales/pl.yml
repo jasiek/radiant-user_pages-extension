@@ -1,0 +1,23 @@
+---
+pl:
+  activerecord:
+    errors:
+      models:
+        page:
+          attributes:
+            permissions:
+              error: 'Brakuje ci uprawnień, aby wykonać tą operację'
+  user_pages:
+    admin:
+      pages:
+        user_page_permissions:
+          page_permissions: 'Uprawnienia strony'
+          login: 'Login'
+          administrator_p: 'Administrator?'
+          permissions: 'Uprawnienia'
+          create: 'Tworzenie podstron'
+          destroy: 'Kasowanie tej strony'
+          update: 'Aktualizacja tej strony'
+          permissions: 'Zmiana uprawnień'
+  yes: 'Tak'
+  no: 'Nie'

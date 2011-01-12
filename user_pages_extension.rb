@@ -1,16 +1,11 @@
-# Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application_controller'
-
 class UserPagesExtension < Radiant::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/user_pages"
+  description "Controls page manipulation operations (create, update, destroy) on a per-user basis."
+  url "http://github.com/jasiek/radiant-user_pages-extension"
 
   extension_config do |config|
     config.active_record.observers = [config.active_record.observers, :page_observer, :user_page_permission_observer]
   end
-
-  # See your config/routes.rb file in this extension to define custom routes
   
   def activate
     PageObserver.instance.send(:add_observer!, Page)

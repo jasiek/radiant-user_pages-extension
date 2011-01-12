@@ -27,7 +27,7 @@ module AdminPagesControllerExtension
 
   def rescue_action(exception)
     if exception.is_a?(UserPagesExtension::AccessDenied)
-      @page.errors.add(:permissions, 'You lack the required priviledges to perform this action')
+      @page.errors.add(:permissions, t('activerecord.errors.models.page.attributes.permissions.error'))
       response_for :invalid
     else
       super

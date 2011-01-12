@@ -1,3 +1,21 @@
 ---
 en:
-  user pages: User Pages
+  activerecord:
+    errors:
+      models:
+        page:
+          attributes:
+            permissions:
+              error: 'You lack the required priviledges to perform this action'
+  user_pages:
+    admin:
+      pages:
+        user_page_permissions:
+          page_permissions: 'Page Permissions'
+          login: 'Login'
+          administrator_p: 'Administrator?'
+          permissions: 'Permissions'
+          create: 'Create a subpage'
+          destroy: 'Destroy this page'
+          update: 'Update this page'
+          permissions: 'Change permissions'

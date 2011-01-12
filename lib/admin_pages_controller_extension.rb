@@ -26,11 +26,25 @@ module AdminPagesControllerExtension
   end
 
   def clear_and_restore_permissions(page, permissions)
+    return if no_changes_to_permissions?(page.permissions, permissions)
     page.permissions.clear
     permissions.each do |query_string|
       next if query_string.empty?
       user_id, action = query_string.split(/,/)
       page.permissions.create!(:user => User.find(user_id), :action => action)
     end
+  end
+
+  def no_changes_to_permissions?(array_of_permissions, permissions_query_string)
+    old_permission_set = array_of_permissions.map do |permission|
+      [permission.user_id, permission.action]
+    end.to_set
+    new_permission_set = permissions_query_string.reject do |query_string|
+      query_string.empty?
+    end.map do |query_string|
+      user_id, action = query_string.split(/,/)
+      [user_id.to_i, action]
+    end.to_set
+    old_permission_set == new_permission_set
   end
 end

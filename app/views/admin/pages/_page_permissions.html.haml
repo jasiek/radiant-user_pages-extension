@@ -1,26 +1,27 @@
-#user_page_permissions
-  - unless error_message_on(@page, :permissions).empty?
-    %div.access_denied
-      = error_message_on(@page, :permissions)
-  %table.permissions
-    %caption
-      = t('user_pages.admin.pages.user_page_permissions.page_permissions')
-    %tr
-      %th
-        = t('user_pages.admin.pages.user_page_permissions.login')
-      %th
-        = t('user_pages.admin.pages.user_page_permissions.administrator_p')
-      %th
-        = t('user_pages.admin.pages.user_page_permissions.permissions')
-    - User.all.each do |user|
+- if current_user.can?(:permissions, @page) or current_user.admin?
+  #user_page_permissions
+    - unless error_message_on(@page, :permissions).empty?
+      %div.access_denied
+        = error_message_on(@page, :permissions)
+    %table.permissions
+      %caption
+        = t('user_pages.admin.pages.user_page_permissions.page_permissions')
       %tr
-        %td
-          = user.name
-          = "(#{user.login})"
-        %td
-          = user.admin? ? t('yes') : t('no')
-        %td
-          = permission_check_box(user, @page, :create, t('user_pages.admin.pages.user_page_permissions.create'))
-          = permission_check_box(user, @page, :destroy, t('user_pages.admin.pages.user_page_permissions.destroy'))
-          = permission_check_box(user, @page, :update, t('user_pages.admin.pages.user_page_permissions.update'))
-          = permission_check_box(user, @page, :permissions, t('user_pages.admin.pages.user_page_permissions.permissions'))
+        %th
+          = t('user_pages.admin.pages.user_page_permissions.login')
+        %th
+          = t('user_pages.admin.pages.user_page_permissions.administrator_p')
+        %th
+          = t('user_pages.admin.pages.user_page_permissions.permissions')
+      - User.all.each do |user|
+        %tr
+          %td
+            = user.name
+            = "(#{user.login})"
+          %td
+            = user.admin? ? t('yes') : t('no')
+          %td
+            = permission_check_box(user, @page, :create, t('user_pages.admin.pages.user_page_permissions.create'))
+            = permission_check_box(user, @page, :destroy, t('user_pages.admin.pages.user_page_permissions.destroy'))
+            = permission_check_box(user, @page, :update, t('user_pages.admin.pages.user_page_permissions.update'))
+            = permission_check_box(user, @page, :permissions, t('user_pages.admin.pages.user_page_permissions.permissions'))

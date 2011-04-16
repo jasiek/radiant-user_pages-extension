@@ -11,7 +11,7 @@ module AdminPagesControllerExtension
 
   def persist_permissions_on_update(&blk)
     UserPagePermission.transaction do
-      clear_and_restore_permissions(@page, params[:page][:permissions])
+      clear_and_restore_permissions(@page, params[:page][:permissions] || '')
       params[:page].delete(:permissions)
       yield
     end

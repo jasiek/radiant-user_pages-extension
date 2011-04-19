@@ -2,7 +2,9 @@ class UserPagePermissionObserver < ActiveRecord::Observer
   cattr_accessor :current_user
 
   def before_create(permission)
-    raise UserPagesExtension::AccessDenied unless current_user_can?(:permissions, permission.page)
+    if current_user
+      raise UserPagesExtension::AccessDenied unless current_user_can?(:permissions, permission.page)
+    end
   end
 
   def after_create(permission)
